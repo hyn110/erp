@@ -1,0 +1,12 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.idea/inspectionProfiles/
+.idea/workspace.xml
+erp_parent/erp_biz/src/
+erp_parent/erp_dao/src/main/java/
+erp_parent/erp_dao/src/test/
+erp_parent/erp_entity/src/
+erp_parent/erp_web/src/main/java/
+erp_parent/erp_web/src/test/
+erp_parent/src/main/java/
+erp_parent/src/test/
