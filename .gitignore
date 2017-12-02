@@ -10,3 +10,4 @@ erp_parent/erp_web/src/main/java/
 erp_parent/erp_web/src/test/
 erp_parent/src/main/java/
 erp_parent/src/test/
+.idea/dataSources.xml
