@@ -10,16 +10,29 @@
     <script type="text/javascript" src="ui/locale/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="js/jquery.serializejson.js"></script>
     <script type="text/javascript">
+        var edit_form_url = 'dep_save';// 默认表单地址
         $(function () {
             $('#grid').datagrid({
                               url: 'dep_list',
                               columns: [[
                                   {field: 'uuid', title: '编号', width: 100},
                                   {field: 'name', title: '名称', width: 100},
-                                  {field: 'tele', title: '电话', width: 100}
+                                  {field: 'tele', title: '电话', width: 100},
+                                  {field:'-',title:'操作',width:100,formatter:function(value,row,index){
+                                    //  console.log(value+"  ,  "+row+"   ,   "+index);
+                                      var obj = JSON.stringify(row); // 行数据转换成 json
+
+                                      var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+                                      op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+                                      return op;
+                                  }}
+
                               ]],
                               pagination:true,
-                              pageList:[5,10,15,20]
+                              pageList:[5,10,15,20],
+                              toolbar:[{iconCls:'icon-add',
+                                        text:'新增',
+                                        handler:add}]
                           });
             
             
@@ -31,14 +44,64 @@
                 // 重新加载数据
                 $("#grid").datagrid('load',parameterJson);
             })
-        });
 
+            // 新增时保存
+            $("#submitBtn").click(function () {
+                var t = $("#editForm").form('validate');
+                console.log(t);
+                if(t){
+                    //$("#editForm").submit();
+                   $.messager.progress(); // 显示进度条
+                    // 异步提交
+                    $("#editForm").form('submit',{
+                        url: edit_form_url,
+                        success:function () { // 成功后重新加载数据
+                            $("#grid").datagrid('reload');
+                            $.messager.progress('close');
+                            $("#editWindow").window('close')
+                        }
+                    })
+                }else{
+                    $.messager.alert('提示','必须输入完整信息...');
+                }
+            })
+        });
+        //
+        function add(){
+            $("#editWindow").window('open');
+            // 修改 form 表单地址
+            edit_form_url = 'dep_save';
+            $("#editForm").form('clear');
+            $("#editForm_uuid").val(-1); // 给隐藏字段赋初值,否则提交空字符串,数据封装出错
+        }
+        // 删除对象
+        function del(id) {
+            $.messager.confirm('确认','确认删除该条数据吗?',function (yes) {
+                if(yes){
+                    $.post("/erp/dep_del",{"uuid":id},function (result) {
+                        if(result=='success'){
+                            $("#grid").datagrid('reload');
+                        }
+                    })
+                }
+            });
+        }
+        // 修改对象
+        function edit(rowData){
+            console.log(rowData)
+            $("#editWindow").window('open');
+            $("#editForm")
+                .form('load', rowData);
+            // 修改 form 表单地址
+            edit_form_url = 'dep_update';
+        }
     </script>
 </head>
 <body>
     <form id="searchForm">
         <table>
             <tr>
+
                 <td>部门名称 :</td>
                 <td><input type="text" name="name"></td>
                 <td>部门电话 :</td>
@@ -46,10 +109,32 @@
                 <td><input id="searchBtn" type="button" value="搜索"/></td>
             </tr>
 
-
         </table>
     </form>
 
     <table id="grid"></table>
+
+    <div id="editWindow" class="easyui-window" title="部门编辑"  style="width:300px;height:200px"
+        data-options="closed:true" >
+        <form id="editForm" action="/erp/dep_save" method="post">
+            <table>
+                <tr>
+                    <td><input type="hidden" id="editForm_uuid" name="uuid"></td>
+                </tr>
+                <tr>
+                    <td>名称 :</td>
+                    <td><input type="text" name="name" class="easyui-validatebox" data-options="required:true"/></td>
+                </tr>
+                <tr>
+                    <td>电话 :</td>
+                    <td><input type="text" name="tele" class="easyui-validatebox" data-options="required:true"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input id="submitBtn" type="button" value="保存"/></td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </body>
 </html>
