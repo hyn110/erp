@@ -8,93 +8,30 @@
     <script type="text/javascript" src="ui/jquery.min.js"></script>
     <script type="text/javascript" src="ui/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="ui/locale/easyui-lang-zh_CN.js"></script>
-    <script type="text/javascript" src="js/jquery.serializejson.js"></script>
+    <script type="text/javascript" src="js/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="js/crud.js"></script>
     <script type="text/javascript">
-        var edit_form_url = 'dep_save';// 默认表单地址
-        $(function () {
-            $('#grid').datagrid({
-                              url: 'dep_list',
-                              columns: [[
-                                  {field: 'uuid', title: '编号', width: 100},
-                                  {field: 'name', title: '名称', width: 100},
-                                  {field: 'tele', title: '电话', width: 100},
-                                  {field:'-',title:'操作',width:100,formatter:function(value,row,index){
-                                    //  console.log(value+"  ,  "+row+"   ,   "+index);
-                                      var obj = JSON.stringify(row); // 行数据转换成 json
+        var name = 'dep' //
+        var edit_form_url = name+'_save';// 默认表单地址
 
-                                      var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
-                                      op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
-                                      return op;
-                                  }}
+        var columns = [[
+            {field: 'uuid', title: '编号', width: 100},
+            {field: 'name', title: '名称', width: 100},
+            {field: 'tele', title: '电话', width: 100},
+            {field:'-',title:'操作',width:100,formatter:function(value,row,index){
+                //  console.log(value+"  ,  "+row+"   ,   "+index);
+                var obj = JSON.stringify(row); // 行数据转换成 json
 
-                              ]],
-                              pagination:true,
-                              pageList:[5,10,15,20,50],
-                              toolbar:[{iconCls:'icon-add',
-                                        text:'新增',
-                                        handler:add}]
-                          });
-            
-            
-            //
-            $("#searchBtn").click(function () {
-                var parameterJson = $("#searchForm").serializeJSON();
-                //console.log(parameterJson);
-                console.log(JSON.stringify($("#grid").datagrid('getData')));
-                // 重新加载数据
-                $("#grid").datagrid('load',parameterJson);
-            })
+                var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+                op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+                return op;
+            }}
 
-            // 新增时保存
-            $("#submitBtn").click(function () {
-                var t = $("#editForm").form('validate');
-                console.log(t);
-                if(t){
-                    //$("#editForm").submit();
-                   $.messager.progress(); // 显示进度条
-                    // 异步提交
-                    $("#editForm").form('submit',{
-                        url: edit_form_url,
-                        success:function () { // 成功后重新加载数据
-                            $("#grid").datagrid('reload');
-                            $.messager.progress('close');
-                            $("#editWindow").window('close')
-                        }
-                    })
-                }else{
-                    $.messager.alert('提示','必须输入完整信息...');
-                }
-            })
-        });
-        //
-        function add(){
-            $("#editWindow").window('open');
-            // 修改 form 表单地址
-            edit_form_url = 'dep_save';
-            $("#editForm").form('clear');
-            $("#editForm_uuid").val(-1); // 给隐藏字段赋初值,否则提交空字符串,数据封装出错
-        }
-        // 删除对象
-        function del(id) {
-            $.messager.confirm('确认','确认删除该条数据吗?',function (yes) {
-                if(yes){
-                    $.post("/erp/dep_del",{"uuid":id},function (result) {
-                        if(result=='success'){
-                            $("#grid").datagrid('reload');
-                        }
-                    })
-                }
-            });
-        }
-        // 修改对象
-        function edit(rowData){
-            console.log(rowData)
-            $("#editWindow").window('open');
-            $("#editForm")
-                .form('load', rowData);
-            // 修改 form 表单地址
-            edit_form_url = 'dep_update';
-        }
+        ]];
+
+
+
+
     </script>
 </head>
 <body>
@@ -106,7 +43,7 @@
                 <td><input type="text" name="name"></td>
                 <td>部门电话 :</td>
                 <td><input type="text" name="tele"></td>
-                <td><input id="searchBtn" type="button" value="搜索"/></td>
+                <td><input id="btnSearch" type="button" value="搜索"/></td>
             </tr>
 
         </table>
