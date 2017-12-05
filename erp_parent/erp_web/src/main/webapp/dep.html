@@ -35,7 +35,7 @@
     </script>
 </head>
 <body>
-    <form id="searchForm">
+    <form id="searchForm" method="post">
         <table>
             <tr>
 
@@ -51,8 +51,15 @@
 
     <table id="grid"></table>
 
-    <div id="editWindow" class="easyui-window" title="部门编辑"  style="width:300px;height:200px"
-        data-options="closed:true" >
+    <div id="editDlg"  class="easyui-dialog" style="padding:8px;width:400px"
+         data-options="title:'部门编辑',modal:true,closed:true,
+			buttons:[{
+				text:'保存',
+				handler:save
+			},{
+				text:'关闭',
+				handler:close
+			}]">
         <form id="editForm" action="/erp/dep_save" method="post">
             <table>
                 <tr>
@@ -66,10 +73,10 @@
                     <td>电话 :</td>
                     <td><input type="text" name="tele" class="easyui-validatebox" data-options="required:true"/></td>
                 </tr>
-                <tr>
-                    <td></td>
-                    <td><input id="submitBtn" type="button" value="保存"/></td>
-                </tr>
+                <!--<tr>-->
+                    <!--<td></td>-->
+                    <!--<td><input id="submitBtn" type="button" value="保存"/></td>-->
+                <!--</tr>-->
             </table>
         </form>
     </div>
