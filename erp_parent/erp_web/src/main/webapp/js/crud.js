@@ -15,8 +15,13 @@ $(function () {
 
     //
     $("#btnSearch").click(function () {
-        var parameterJson = $("#searchForm").serializeJSON();
+        // 下拉框一般为关联对象,当没选中关联对象时,关联对象的值为空,此时
+        // 因为Bean对象的主键都是 Long 类型,所以约定将其赋值为-1,否则数据封装出问题
+       // if($('#searchForm :input[class="combo-text validatebox-text"]')&&''== $('#searchForm :input[class="combo-text validatebox-text"]').val()){
+       //     $('#searchForm :input[class="combo-value"]').val(-1);
+       // }
 
+        var parameterJson = $("#searchForm").serializeJSON();
         //console.log(parameterJson);
         console.log(JSON.stringify($("#grid").datagrid('getData')));
         // 重新加载数据
@@ -31,7 +36,8 @@ function add(){
     // 修改 form 表单地址
     edit_form_url = name +'_save';
     // $("#editForm").form('clear');
-    $('#editForm > input[type="hidden"]').val(-1); // 给隐藏字段赋初值,否则提交空字符串,数据封装出错
+    // 给隐藏字段赋初值,否则提交空字符串,数据封装出错 , 如果使用包装类型不会出问题
+    // $('#editForm > input[type="hidden"]').val(-1);
 }
 // 删除对象
 function del(id) {

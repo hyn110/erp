@@ -48,17 +48,43 @@
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
 	<div style="height:2px;"></div>
 	<form id="searchForm" method="post">
-			名称：<input name="t1.name" >
-	产地：<input name="t1.origin" >
-	厂家：<input name="t1.producer" >
-	计量单位：<input name="t1.unit" >
-	进货价格：<input name="t1.inprice" >
-	销售价格：<input name="t1.outprice" >
-	商品类型：<input name="t1.goodsType.uuid" class="easyui-combobox" data-options="
-			url:'goodstype_list',valueField:'uuid',textField:'name'
-		">
 
-		<button type="button" id="btnSearch">查询</button>
+		<table>
+			<tr>
+				<td>名称</td>
+				<td ><input name="t1.name" ></td>
+				<td>产地</td>
+				<td><input name="t1.origin" ></td>
+
+
+			</tr>
+
+			<tr>
+				<td>计量单位:</td>
+				<td><input name="t1.unit" ></td>
+				<td>商品类型：</td>
+				<td><input name="t1.goodsType.uuid" class="easyui-combobox" data-options="
+						url:'goodstype_list',valueField:'uuid',textField:'name'"></td>
+
+			</tr>
+			<tr>
+				<td>厂家</td>
+				<td><input name="t1.producer" ></td>
+			</tr>
+
+		</table>
+		<table>
+			<tr>
+
+				<td>进货价格范围</td>
+				<td colspan="1"><input name="t1.inprice" > --> <input name="t2.inprice" ></td>
+			</tr>
+			<tr>
+				<td>销售价格范围：</td>
+				<td colspan="2"><input name="t1.outprice" > --> <input name="t2.outprice" ></td>
+			</tr>
+			<tr><td><button type="button" id="btnSearch">查询</button></td></tr>
+		</table>
 	</form>
 	<div style="height:2px;"></div>
 </div>
