@@ -21,14 +21,24 @@
 	  		    {field:'unit',title:'计量单位',width:100},
 	  		    {field:'inprice',title:'进货价格',width:100},
 	  		    {field:'outprice',title:'销售价格',width:100},
-	  		    {field:'goodstype',title:'商品类型',width:100,formatter:function(value){
-	  		    	return value.name;
+	  		    {field:'goodsType',title:'商品类型',width:100,formatter:function(value){
+	  		        if(value!=null)
+	  		    		return value.name;
+	  		        return "";
 	  		    }},
 
 				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
-					var oper = "<a href=\"javascript:void(0)\" onclick=\"edit(" + row.uuid + ')">修改</a>';
-					oper += ' <a href="javascript:void(0)" onclick="del(' + row.uuid + ')">删除</a>';
-					return oper;
+                    var tmpRow = {};
+                    for(var key in row){ // 重新构建json对象,给key的名字加前缀
+//				        console.log(key+" : "+row[key]);
+                        tmpRow['t.'+key]=row[key];
+                    }
+
+                    var obj = JSON.stringify(tmpRow); // 行数据转换成 json
+
+                    var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+                    op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+                    return op;
 				}}
 				]];
 
@@ -37,14 +47,14 @@
 <body>
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
 	<div style="height:2px;"></div>
-	<form id="searchForm">
+	<form id="searchForm" method="post">
 			名称：<input name="t1.name" >
 	产地：<input name="t1.origin" >
 	厂家：<input name="t1.producer" >
 	计量单位：<input name="t1.unit" >
 	进货价格：<input name="t1.inprice" >
 	销售价格：<input name="t1.outprice" >
-	商品类型：<input name="t1.goodstype.uuid" class="easyui-combobox" data-options="
+	商品类型：<input name="t1.goodsType.uuid" class="easyui-combobox" data-options="
 			url:'goodstype_list',valueField:'uuid',textField:'name'
 		">
 
@@ -54,8 +64,16 @@
 </div>
 <table id="grid"></table>
 
-<div id="editDlg" style="padding:8px;">
-	<form id="editForm">
+<div id="editDlg"  class="easyui-dialog" style="padding:8px;width:400px"
+	 data-options="title:'我的对话框',modal:true,closed:true,
+			buttons:[{
+				text:'保存',
+				handler:save
+			},{
+				text:'关闭',
+				handler:close
+			}]">
+	<form id="editForm" method="post" id="editForm_uuid">
 			<input name="t.uuid" type="hidden"> 
 
 		<table>
@@ -78,7 +96,7 @@
 				<td>销售价格</td><td><input name="t.outprice" class="easyui-numberbox" data-options="min:0,precision:2,prefix:'￥'"> </td>
 			</tr>
 			<tr>
-				<td>商品类型</td><td><input name="t.goodstype.uuid" class="easyui-combobox" data-options="
+				<td>商品类型</td><td><input name="t.goodsType.uuid" class="easyui-combobox" data-options="
 			url:'goodstype_list',valueField:'uuid',textField:'name'
 		"> </td>
 			</tr>

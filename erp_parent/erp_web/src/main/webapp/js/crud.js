@@ -5,7 +5,7 @@ $(function () {
     $('#grid').datagrid({
                             url: name+'_listByPage',
                             columns: columns,
-                            pagination:true,
+                          //  pagination:true,
                             pageList:[5,10,15,20,50],
                             toolbar:[{iconCls:'icon-add',
                                 text:'新增',
@@ -16,6 +16,7 @@ $(function () {
     //
     $("#btnSearch").click(function () {
         var parameterJson = $("#searchForm").serializeJSON();
+
         //console.log(parameterJson);
         console.log(JSON.stringify($("#grid").datagrid('getData')));
         // 重新加载数据
@@ -30,17 +31,32 @@ function add(){
     // 修改 form 表单地址
     edit_form_url = name +'_save';
     // $("#editForm").form('clear');
-    $("#editForm_uuid").val(-1); // 给隐藏字段赋初值,否则提交空字符串,数据封装出错
+    $('#editForm > input[type="hidden"]').val(-1); // 给隐藏字段赋初值,否则提交空字符串,数据封装出错
 }
 // 删除对象
 function del(id) {
     $.messager.confirm('确认','确认删除该条数据吗?',function (yes) {
         if(yes){
-            $.post(name+"_del",{"uuid":id},function (result) {
-                if(result=='success'){
-                    $("#grid").datagrid('reload');
+            // $.post(name+"_del",{"uuid":id},function (code,result) {
+            //     console.log("code = "+code);
+            //     if(result=='success'){
+            //         $("#grid").datagrid('reload');
+            //     }
+            // })
+
+            $.ajax({
+                type:'post',
+                url:name+"_del",
+                data:{"uuid":id},
+                success:function (result) {
+                        if(result=='success'){
+                            $("#grid").datagrid('reload');
+                        }
+                },
+                error:function (code,result) {
+                        console.log("code = "+code);
                 }
-            })
+            });
         }
     });
 }
