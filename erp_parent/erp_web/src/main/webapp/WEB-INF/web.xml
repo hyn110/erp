@@ -5,10 +5,10 @@
          id="WebApp_ID" version="2.5">
     <display-name>erp-web</display-name>
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
         <welcome-file>dep.html</welcome-file>
-        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+
+
 
     <!--spring -->
     <listener>
@@ -19,6 +19,14 @@
         <param-value>classpath*:applicationContext*.xml</param-value>
     </context-param>
 
+    <filter>
+        <filter-name>openSessionInView</filter-name>
+        <filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>openSessionInView</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
