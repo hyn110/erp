@@ -2,8 +2,16 @@
  * Created by huangyunning on 2017/12/4.
  */
 $(function () {
+    // 供应商和客户标识
+    if(typeof(listParam)=='undefined'){
+        listParam='';
+    }
+    if(typeof(saveParam)=='undefined'){
+        saveParam='';
+    }
+
     $('#grid').datagrid({
-                            url: name+'_listByPage',
+                            url: name+'_listByPage'+listParam,
                             columns: columns,
                             pagination:true,
                             pageList:[5,10,15,20,50],
@@ -86,7 +94,7 @@ function save() {
         $.messager.progress(); // 显示进度条
         // 异步提交
         $("#editForm").form('submit',{
-            url: edit_form_url,
+            url: edit_form_url+''+saveParam,
             success:function () { // 成功后重新加载数据
                 $("#grid").datagrid('reload');
                 $.messager.progress('close');

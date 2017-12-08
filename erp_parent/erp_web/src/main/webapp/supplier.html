@@ -10,8 +10,20 @@
 <script type="text/javascript" src="ui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="ui/jquery.serializejson.min.js"></script>
 <script type="text/javascript" src="js/crud.js"></script>
+<script src="js/request.js"></script>
 <script type="text/javascript">
 	var name="supplier";
+
+	if(Request['type']=='1'){
+	    document.title="供应商管理"
+	}else{
+        document.title="客户管理"
+	}
+
+	var listParam = '?t1.type='+Request['type'];
+	var saveParam = '?t1.type='+Request['type'];
+
+
 	var columns=[[
 	  		    {field:'uuid',title:'编号',width:100},
 	  		    {field:'name',title:'名称',width:100},
@@ -22,13 +34,24 @@
 	  		    {field:'type',title:'1：供应商 2：客户',width:100},
 
 				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
-					var oper = "<a href=\"javascript:void(0)\" onclick=\"edit(" + row.uuid + ')">修改</a>';
-					oper += ' <a href="javascript:void(0)" onclick="del(' + row.uuid + ')">删除</a>';
-					return oper;
+                    var tmpRow = {};
+                    for(var key in row){ // 重新构建json对象,给key的名字加前缀
+//				        console.log(key+" : "+row[key]);
+                        tmpRow['t.'+key]=row[key];
+                    }
+
+                    var obj = JSON.stringify(tmpRow); // 行数据转换成 json
+
+                    var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+                    op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+                    return op;
 				}}
 				]];
 
 </script>
+
+
+
 </head>
 <body>
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
@@ -39,7 +62,8 @@
 	联系人：<input name="t1.contact" >
 	联系电话：<input name="t1.tele" >
 	邮件地址：<input name="t1.email" >
-	1：供应商 2：客户：<input name="t1.type" >
+	供应商:<input  name="t1.type" >
+	客户:<input  name="t1.type"  >
 
 		<button type="button" id="btnSearch">查询</button>
 	</form>
@@ -47,7 +71,16 @@
 </div>
 <table id="grid"></table>
 
-<div id="editDlg" style="padding:8px;">
+<div id="editDlg"  class="easyui-dialog" style="padding:8px;width:400px"
+	 data-options="title:'我的对话框',modal:true,closed:true,
+			buttons:[{
+				text:'保存',
+				handler:save
+			},{
+				text:'关闭',
+				handler:close
+			}]">
+
 	<form id="editForm">
 			<input name="t.uuid" type="hidden"> 
 
@@ -68,7 +101,10 @@
 				<td>邮件地址</td><td><input name="t.email"> </td>
 			</tr>
 			<tr>
-				<td>1：供应商 2：客户</td><td><input name="t.type"> </td>
+				<td>
+					供应商:<input  name="t.type" >
+					客户:<input  name="t.type"  >
+				</td>
 			</tr>
 
 		</table>
