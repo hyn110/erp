@@ -18,9 +18,17 @@
 	  		    {field:'empuuid',title:'员工编号',width:100},
 
 				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
-					var oper = "<a href=\"javascript:void(0)\" onclick=\"edit(" + row.uuid + ')">修改</a>';
-					oper += ' <a href="javascript:void(0)" onclick="del(' + row.uuid + ')">删除</a>';
-					return oper;
+                    var tmpRow = {};
+                    for(var key in row){ // 重新构建json对象,给key的名字加前缀
+//				        console.log(key+" : "+row[key]);
+                        tmpRow['t.'+key]=row[key];
+                    }
+
+                    var obj = JSON.stringify(tmpRow); // 行数据转换成 json
+
+                    var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+                    op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+                    return op;
 				}}
 				]];
 
@@ -29,7 +37,7 @@
 <body>
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
 	<div style="height:2px;"></div>
-	<form id="searchForm">
+	<form id="searchForm" method="post">
 			名称：<input name="t1.name" >
 	员工编号：<input name="t1.empuuid" >
 
@@ -39,8 +47,16 @@
 </div>
 <table id="grid"></table>
 
-<div id="editDlg" style="padding:8px;">
-	<form id="editForm">
+<div id="editDlg"  class="easyui-dialog" style="padding:8px;width:400px"
+	 data-options="title:'我的对话框',modal:true,closed:true,
+			buttons:[{
+				text:'保存',
+				handler:save
+			},{
+				text:'关闭',
+				handler:close
+			}]">
+	<form id="editForm" method="post">
 			<input name="t.uuid" type="hidden"> 
 
 		<table>
