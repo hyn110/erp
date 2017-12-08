@@ -5,7 +5,7 @@ $(function () {
     $('#grid').datagrid({
                             url: name+'_listByPage',
                             columns: columns,
-                          //  pagination:true,
+                            pagination:true,
                             pageList:[5,10,15,20,50],
                             toolbar:[{iconCls:'icon-add',
                                 text:'新增',
