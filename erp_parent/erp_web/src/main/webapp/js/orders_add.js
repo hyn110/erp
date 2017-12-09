@@ -84,6 +84,21 @@ $(function () {
                             }
                         });
 
+    $('#supplier').combogrid({
+                                 panelWidth:700,
+                                 idField:'uuid',
+                                 textField:'name',
+                                 url:'supplier_list?t1.type=1',
+                                 columns:[[
+                                     {field:'uuid',title:'编号',width:100},
+                                     {field:'name',title:'名称',width:100},
+                                     {field:'address',title:'联系地址',width:100},
+                                     {field:'contact',title:'联系人',width:100},
+                                     {field:'tele',title:'联系电话',width:100},
+                                     {field:'email',title:'邮件地址',width:150}
+                                 ]]
+
+                             });
 });
 // 当前编辑行的索引
 var currentEdittingRowIndex=0;
@@ -159,5 +174,51 @@ function del(index) {
     $('#grid').datagrid('loadData',$('#grid').datagrid('getData'));
 }
 function save() {
-    alert('save')
+    // 获取供应商的值
+    var submitData = $('#ordersForm').serializeJSON();
+    if(submitData['t.supplieruuid']==''){
+        $.messager.alert('提示','请选择供应商','info');
+        return;
+    }
+    // 获取datagrid 的数据
+    if(currentEdittingRowIndex!=-1){
+        $('#grid').datagrid("endEdit",currentEdittingRowIndex);
+    }
+
+    var rows = $('#grid').datagrid('getRows');
+    if(rows.length==0){
+        $.messager.alert('提示','请添加明细','info');
+        return;
+    }
+    var msg= new Array();
+    $.each(rows,function (i,row) {
+        // console.log(row.num);
+        if(row.num=='0'){
+            msg.push(row.goodsname);
+            return;
+        }
+    })
+    if(msg.length>0){
+        $.messager.alert('请添加以下商品的数量',msg,'info');
+        return;
+    }
+    var orderdetails = JSON.stringify(rows);
+    console.log(orderdetails);
+    submitData['jsonString'] = orderdetails;
+
+    // 提交数据
+    $.ajax({
+                url:'orders_save',
+                type:'post',
+                dataType:'json',
+                data:submitData,
+                success:function (result) {
+                    $.messager.alert('提示',result.message,'info');
+                    if(result.success){
+                        $('#supplier').combogrid('clear');
+                        $("#grid").datagrid('loadData',{total:0,rows:[],footer:{num:'商品总价',money:0}})
+                    }
+                }
+           });
+
 }
