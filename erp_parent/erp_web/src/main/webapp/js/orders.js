@@ -14,7 +14,7 @@ var columns=[[
             return '销售';
     }},
     {field:'creater',title:'下单员',width:100,formatter:function (value,order,index) {
-            return order.creater.username;
+            return order.creater.name;
     }},
     {field:'checker',title:'审核员',width:100},
     {field:'starter',title:'采购员',width:100},
@@ -79,7 +79,37 @@ $(function () {
                                 console.log(rowIndex+"  ,  "+rowData);
                                 // 订单详情加载数据
                                 $('#ordersDlg').dialog('open');
-                                // 明细表格
+                                // 加载订单详情的数据
+                                appendSpan('#uuid',rowData.uuid);
+                                appendSpan('#supplier',rowData.supplier.name);
+
+                                switch (parseInt(rowData.type)){
+                                    case 0:
+                                        appendSpan('#type','未审核');
+                                        break;
+                                    case 1:
+                                        appendSpan('#type','已审核');
+                                        break;
+                                    case 2:
+                                        appendSpan('#type','已确认');
+                                        break;
+                                    case 3:
+                                        appendSpan('#type','已入库');
+                                        break;
+
+                                }
+
+                                appendSpan('#creater',rowData.creater.name);
+                                appendSpan('#checker',rowData.checker);
+                                appendSpan('#starter',rowData.starter);
+                                appendSpan('#ender',rowData.ender);
+                                appendSpan('#createtime',rowData.createtime);
+                                appendSpan('#checktime',rowData.checktime);
+                                appendSpan('#starttime',rowData.starttime);
+                                appendSpan('#endtime',rowData.endtime);
+
+
+                                // 订单明细表格
                                 $('#itemgrid').datagrid(
                                     {
                                         columns:[[
@@ -199,4 +229,8 @@ function save() {
 // 关闭编辑窗口
 function close() {
     $("#editDlg").window('close');
+}
+
+function appendSpan(id,content) {
+    $(id).html('<span>'+content+'</span>');
 }
