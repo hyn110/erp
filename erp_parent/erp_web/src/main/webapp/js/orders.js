@@ -14,10 +14,14 @@ var columns=[[
             return '销售';
     }},
     {field:'creater',title:'下单员',width:100,formatter:function (value,order,index) {
-            return order.creater.name;
+            return order.creater==null?'':order.creater.name;
     }},
-    {field:'checker',title:'审核员',width:100},
-    {field:'starter',title:'采购员',width:100},
+    {field:'checker',title:'审核员',width:100,formatter:function (value,order,index) {
+        return order.checker==null?'':order.checker.name;
+    }},
+    {field:'starter',title:'采购员',width:100,formatter:function (value,order,index) {
+        return order.starter==null?'':order.starter.name;
+    }},
     {field:'ender',title:'库管员',width:100},
     {field:'supplieruuid',title:'供应商或客户',width:100,formatter:function (value,order,index) {
         if(typeof(order.supplier)=='undefined'){
@@ -80,33 +84,33 @@ $(function () {
                                 // 订单详情加载数据
                                 $('#ordersDlg').dialog('open');
                                 // 加载订单详情的数据
-                                appendSpan('#uuid',rowData.uuid);
-                                appendSpan('#supplier',rowData.supplier.name);
+                                appendContent('#uuid', rowData.uuid);
+                                appendContent('#supplier', rowData.supplier.name);
 
-                                switch (parseInt(rowData.type)){
+                                switch (parseInt(rowData.state)){
                                     case 0:
-                                        appendSpan('#type','未审核');
+                                        appendContent('#state', '未审核');
                                         break;
                                     case 1:
-                                        appendSpan('#type','已审核');
+                                        appendContent('#state', '已审核');
                                         break;
                                     case 2:
-                                        appendSpan('#type','已确认');
+                                        appendContent('#state', '已确认');
                                         break;
                                     case 3:
-                                        appendSpan('#type','已入库');
+                                        appendContent('#state', '已入库');
                                         break;
 
                                 }
 
-                                appendSpan('#creater',rowData.creater.name);
-                                appendSpan('#checker',rowData.checker);
-                                appendSpan('#starter',rowData.starter);
-                                appendSpan('#ender',rowData.ender);
-                                appendSpan('#createtime',rowData.createtime);
-                                appendSpan('#checktime',rowData.checktime);
-                                appendSpan('#starttime',rowData.starttime);
-                                appendSpan('#endtime',rowData.endtime);
+                                appendContent('#creater', rowData.creater.name);
+                                appendContent('#checker', rowData.checker==null?'':rowData.checker.name);
+                                appendContent('#starter', rowData.starter);
+                                appendContent('#ender', rowData.ender);
+                                appendContent('#createtime', rowData.createtime);
+                                appendContent('#checktime', rowData.checktime);
+                                appendContent('#starttime', rowData.starttime);
+                                appendContent('#endtime', rowData.endtime);
 
 
                                 // 订单明细表格
@@ -127,15 +131,25 @@ $(function () {
                                                         return '已入库';
                                                 }
                                             }}]],
-
+                                        checkOnSelect:true,
                                         singleSelect:true,
                                         data:rowData.orderdetails
                                     })
+
+                                // 审核操作时,显示审核按钮
+                                if(Request['operation']=='check'){
+                                    $('#btnCheck').show();
+                                }
+
+                                // 确认操作时,显示确认按钮
+                                if(Request['operation']=='start'){
+                                    $('#btnStart').show();
+                                }
                             }
                         });
 
 
-    //
+    // 条件查询按钮的点击事件
     $("#btnSearch").click(function () {
         // 下拉框一般为关联对象,当没选中关联对象时,关联对象的值为空,此时
         // 因为Bean对象的主键都是 Long 类型,所以约定将其赋值为-1,否则数据封装出问题
@@ -158,6 +172,75 @@ $(function () {
                                modal:true
                            });
 
+    // 审核按钮的点击事件
+    $('#btnCheck').click(function(){
+
+
+        $.messager.confirm('提示','确定要审核吗?',function (yes) {
+            if(yes){
+                // 获取订单数据
+                // 发送网络请求
+                var orderUuid = $('#uuid').html();
+                // var param = JSON.stringify(orderUuid);
+                $.ajax({
+                    url:'orders_doCheck',
+                    datatype:'json',
+                    type:'post',
+                    data:{'uuid':orderUuid},
+                    success:function (result) {
+                        if(result.success){
+                            // 关闭窗口
+                            // 刷新表格
+                            $('#ordersDlg').dialog('close');
+                            $('#grid').datagrid('reload');
+                            $.messager.alert('提示',result.message);
+                        }else{
+                            $.messager.alert('提示',result);
+                        }
+                    },
+                    error:function (result) {
+                       $.messager.alert("提示",'操作失败,请联系后台管理员..');
+                    }
+                })
+            }
+        })
+
+    });
+
+    // 确认按钮的点击事件
+    $('#btnStart').click(function(){
+
+
+        $.messager.confirm('提示','确定要确认吗?',function (yes) {
+            if(yes){
+                // 获取订单数据
+                // 发送网络请求
+                var orderUuid = $('#uuid').html();
+                // var param = JSON.stringify(orderUuid);
+                $.ajax({
+                           url:'orders_doStart',
+                           datatype:'json',
+                           type:'post',
+                           data:{'uuid':orderUuid},
+                           success:function (result) {
+                               if(result.success){
+                                   // 关闭窗口
+                                   // 刷新表格
+                                   $('#ordersDlg').dialog('close');
+                                   $('#grid').datagrid('reload');
+                                   $.messager.alert('提示',result.message);
+                               }else{
+                                   $.messager.alert('提示',result);
+                               }
+                           },
+                           error:function (result) {
+                               $.messager.alert("提示",'操作失败,请联系后台管理员..');
+                           }
+                       })
+            }
+        })
+
+    });
 });
 //
 function add(){
@@ -230,7 +313,7 @@ function save() {
 function close() {
     $("#editDlg").window('close');
 }
-
-function appendSpan(id,content) {
-    $(id).html('<span>'+content+'</span>');
+// 往指定的便签添加内容
+function appendContent(id, content) {
+    $(id).html(content);
 }
