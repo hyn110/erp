@@ -83,6 +83,7 @@ $(function () {
                                 console.log(rowIndex+"  ,  "+rowData);
                                 // 订单详情加载数据
                                 $('#ordersDlg').dialog('open');
+
                                 // 加载订单详情的数据
                                 appendContent('#uuid', rowData.uuid);
                                 appendContent('#supplier', rowData.supplier.name);
@@ -112,41 +113,114 @@ $(function () {
                                 appendContent('#starttime', rowData.starttime);
                                 appendContent('#endtime', rowData.endtime);
 
+                                $('#itemgrid').datagrid('loadData',rowData.orderdetails);
 
-                                // 订单明细表格
-                                $('#itemgrid').datagrid(
-                                    {
-                                        columns:[[
-                                            {field:'uuid',title:'编号',width:80},
-                                            {field:'goodsuuid',title:'商品编号',width:90},
-                                            {field:'goodsname',title:'商品名称',width:100},
-                                            {field:'price',title:'价格',width:100},
-                                            {field:'num',title:'数量',width:100},
-                                            {field:'money',title:'金额',width:100},
-                                            {field:'state',title:'状态',width:100,formatter:function (value,order,index) {
-                                                switch (parseInt(value)){
-                                                    case 0:
-                                                        return '未入库';
-                                                    case 1:
-                                                        return '已入库';
-                                                }
-                                            }}]],
-                                        checkOnSelect:true,
-                                        singleSelect:true,
-                                        data:rowData.orderdetails
-                                    })
-
-                                // 审核操作时,显示审核按钮
-                                if(Request['operation']=='check'){
-                                    $('#btnCheck').show();
-                                }
-
-                                // 确认操作时,显示确认按钮
-                                if(Request['operation']=='start'){
-                                    $('#btnStart').show();
-                                }
                             }
                         });
+
+
+
+
+    // 初始化订单详情
+    $('#ordersDlg').dialog({
+                               title:'订单详情',
+                               width:700,
+                               height:320,
+                               closed:true,
+                               modal:true
+                           });
+
+    // 入库明细窗口初始化
+    $('#itemDlg').dialog({
+                             title:'入库明细',
+                             width: 300,
+                             height: 200,
+                             modal:true,
+                             closed:true,
+                             buttons:[
+                                 {
+                                     text:'入库',
+                                     iconCls:'icon-save',
+                                     handler:doInStore
+                                 }
+                             ]
+                         });
+    // 入库明细窗口初始化
+    $('#itemDlg').dialog({
+                             title:'入库明细',
+                             width: 300,
+                             height: 200,
+                             modal:true,
+                             closed:true,
+                             buttons:[
+                                 {
+                                     text:'入库',
+                                     iconCls:'icon-save',
+                                     handler:doInStore
+                                 }
+                             ]
+                         });
+
+    //===================== 明细窗口配置 start ===============//
+    /**
+     * 1 非入库操作时,只加载表格
+     * 2 当请求是入库操作时,需要添加行的双击事件
+     * 3 !!! 表格的配置 itemgridConfig 必须是配置好后 , 再让 datagrid 加载
+     * 如果datagrid 已经加载配置文件,再给配置文件进行双击绑定,那双击事件不生效!!
+     * @type {{columns: [*], singleSelect: boolean}}
+     */
+    var itemgridConfig =  {
+        columns:[[
+            {field:'uuid',title:'编号',width:80},
+            {field:'goodsuuid',title:'商品编号',width:90},
+            {field:'goodsname',title:'商品名称',width:100},
+            {field:'price',title:'价格',width:100},
+            {field:'num',title:'数量',width:100},
+            {field:'money',title:'金额',width:100},
+            {field:'state',title:'状态',width:100,formatter:function (value,order,index) {
+                switch (parseInt(value)){
+                    case 0:
+                        return '未入库';
+                    case 1:
+                        return '已入库';
+                }
+            }}]],
+        singleSelect:true,
+    };
+
+    // 入库操作时,订单详情可以双击操作
+    if(Request['operation']=='doInStore'){
+        // 绑定双击事件
+        itemgridConfig.onDblClickRow = function (rowIndex,rowData) {
+            // 1 打开商品入库窗口
+            // 2 加载数据
+            // 3 提交入库
+            // 4 刷新订单详情页面
+            // 5 所有订单都入库时,更新订单状态为入库
+            $('#itemDlg').dialog('open');
+            appendContent('#goodsuuid',rowData.goods.uuid);
+            appendContent('#goodsname',rowData.goods.name);
+            appendContent('#num',rowData.num);
+            $('#orderuuid').val(rowData.uuid);
+        }
+    }
+
+    // 订单明细表格初始化
+    $('#itemgrid').datagrid(itemgridConfig);
+
+    //===================== 明细窗口配置 end ===============//
+
+    // 审核操作时,显示审核按钮
+    if(Request['operation']=='check'){
+        $('#btnCheck').show();
+    }
+
+    // 确认操作时,显示确认按钮
+    if(Request['operation']=='start'){
+        $('#btnStart').show();
+    }
+
+
 
 
     // 条件查询按钮的点击事件
@@ -163,14 +237,7 @@ $(function () {
         // 重新加载数据
         $("#grid").datagrid('load',parameterJson);
     })
-    // 初始化订单详情
-    $('#ordersDlg').dialog({
-                               title:'订单详情',
-                               width:700,
-                               height:320,
-                               closed:true,
-                               modal:true
-                           });
+
 
     // 审核按钮的点击事件
     $('#btnCheck').click(function(){
@@ -207,7 +274,7 @@ $(function () {
 
     });
 
-    // 确认按钮的点击事件
+    // 入库确认按钮的点击事件
     $('#btnStart').click(function(){
 
 
@@ -241,7 +308,11 @@ $(function () {
         })
 
     });
+
+
 });
+
+
 //
 function add(){
     $("#editDlg").window('open');
@@ -313,7 +384,19 @@ function save() {
 function close() {
     $("#editDlg").window('close');
 }
-// 往指定的便签添加内容
+/**
+ * 往指定id的标签添加数据
+ * @param id
+ * @param content
+ */
 function appendContent(id, content) {
     $(id).html(content);
+}
+
+
+
+// 商品入库操作
+function doInStore() {
+    var param = $('#itemForm').serializeJSON();
+    console.log('入库操作 :'+JSON.stringify(param));
 }

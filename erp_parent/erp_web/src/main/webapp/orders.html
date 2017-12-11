@@ -23,6 +23,10 @@
         document.title = '采购订单确认';
         listParam += '?t1.state=1';
     }
+    if(Request['operation']=='doInStore'){
+        document.title = '采购订单确认';
+        listParam += '?t1.state=2&t1.type=1';
+    }
 
 </script>
 
@@ -148,6 +152,38 @@
 	<div id="itemgrid"></div>
 	<a class="easyui-linkbutton" id="btnCheck" href="#" data-options="iconCls:'icon-search'" style="display: none">审核</a>
 	<a class="easyui-linkbutton" id="btnStart" href="#" data-options="iconCls:'icon-search'" style="display: none">确认</a>
+</div>
+
+<!--入库明细窗口-->
+<div id="itemDlg" style="padding: 2px">
+
+	<form id="itemForm">
+		<input type="hidden" id="orderuuid" name="id">
+		<table class="hovertable">
+			<tr>
+				<td width="35%">商品编号</td>
+				<td id="goodsuuid" width="65%"></td>
+			</tr>
+
+			<tr>
+				<td width="35%">商品名称</td>
+				<td id="goodsname" width="65%"></td>
+			</tr>
+
+
+			<tr>
+				<td width="35%">商品数量</td>
+				<td id="num" width="65%"></td>
+			</tr>
+
+			<tr>
+				<td  width="35%">仓库</td>
+				<td ><input  name="storeuuid" class="easyui-combobox" data-options="
+						url:'store_list',valueField:'uuid',textField:'name'"></td>
+			</tr>
+
+		</table>
+	</form>
 </div>
 </body>
 </html>

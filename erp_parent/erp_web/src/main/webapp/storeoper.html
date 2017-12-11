@@ -16,15 +16,24 @@
 	  		    {field:'uuid',title:'编号',width:100},
 	  		    {field:'empuuid',title:'操作员工编号',width:100},
 	  		    {field:'opertime',title:'操作日期',width:100},
-	  		    {field:'storeuuid',title:'仓库编号',width:100},
-	  		    {field:'goodsuuid',title:'商品编号',width:100},
+	  		    {field:'storeuuid',title:'仓库编号',width:100,formatter:function (value,row,index) {
+					return row.store==null?'':row.store.uuid;
+                }},
+	  		    {field:'goodsuuid',title:'商品编号',width:100,formatter:function (value,row,index) {
+                    return row.goods==null?'':row.goods.uuid;
+                }},
 	  		    {field:'num',title:'数量',width:100},
 	  		    {field:'type',title:'1：入库 2：出库',width:100},
 
 				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
-					var oper = "<a href=\"javascript:void(0)\" onclick=\"edit(" + row.uuid + ')">修改</a>';
-					oper += ' <a href="javascript:void(0)" onclick="del(' + row.uuid + ')">删除</a>';
-					return oper;
+                    var tmpRow = {};
+                    for(var key in row){ // 重新构建json对象,给key的名字加前缀
+                        tmpRow['t.'+key]=row[key];
+                    }
+                    var obj = JSON.stringify(tmpRow); // 行数据转换成 json
+                    var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+                    op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+                    return op;
 				}}
 				]];
 
@@ -33,11 +42,11 @@
 <body>
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
 	<div style="height:2px;"></div>
-	<form id="searchForm">
-			操作员工编号：<input name="t1.empuuid" >
+	<form id="searchForm" method="post">
+			操作员工编号：<input name="t1.emp.uuid" >
 	操作日期：<input name="t1.opertime" >
-	仓库编号：<input name="t1.storeuuid" >
-	商品编号：<input name="t1.goodsuuid" >
+	仓库编号：<input name="t1.store.uuid" >
+	商品编号：<input name="t1.goods.uuid" >
 	数量：<input name="t1.num" >
 	1：入库 2：出库：<input name="t1.type" >
 
@@ -47,23 +56,45 @@
 </div>
 <table id="grid"></table>
 
-<div id="editDlg" style="padding:8px;">
-	<form id="editForm">
+<div id="editDlg"  class="easyui-dialog" style="padding:8px;width:400px"
+	 data-options="title:'我的对话框',modal:true,closed:true,
+			buttons:[{
+				text:'保存',
+				handler:save
+			},{
+				text:'关闭',
+				handler:close
+			}]">
+	<form id="editForm" method="post">
 			<input name="t.uuid" type="hidden"> 
 
 		<table>
-						<tr>
-				<td>操作员工编号</td><td><input name="t.empuuid"> </td>
+			<tr>
+				<td>操作员工编号</td>
+				<td>
+					<!--<input name="t.emp.uuid">-->
+					<input name="t.emp.uuid" class="easyui-combobox"
+						   data-options="valueField:'uuid',textField:'name',url:'emp_list'"/>
+				</td>
 			</tr>
 			<tr>
 				<td>操作日期</td><td><input name="t.opertime"> </td>
 			</tr>
+
 			<tr>
-				<td>仓库编号</td><td><input name="t.storeuuid"> </td>
+				<td>仓库编号</td>
+				<td>
+					<input name="t.store.uuid" class="easyui-combobox"
+						   data-options="valueField:'uuid',textField:'name',url:'store_list'"/>
+				</td>
 			</tr>
 			<tr>
-				<td>商品编号</td><td><input name="t.goodsuuid"> </td>
+				<td>商品编号</td><td>
+				<input name="t.goods.uuid" class="easyui-combobox"
+					   data-options="valueField:'uuid',textField:'name',url:'goods_list'"/>
+			</td>
 			</tr>
+
 			<tr>
 				<td>数量</td><td><input name="t.num"> </td>
 			</tr>

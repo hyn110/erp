@@ -15,17 +15,16 @@
 	var columns=[[
 	  		    {field:'uuid',title:'编号',width:100},
 	  		    {field:'name',title:'名称',width:100},
-	  		    {field:'empuuid',title:'员工编号',width:100},
+	  		    {field:'empuuid',title:'员工编号',width:100,formatter:function (value,row,index) {
+                    return row.emp==null?'':row.emp.uuid;
+                }},
 
 				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
                     var tmpRow = {};
                     for(var key in row){ // 重新构建json对象,给key的名字加前缀
-//				        console.log(key+" : "+row[key]);
                         tmpRow['t.'+key]=row[key];
                     }
-
                     var obj = JSON.stringify(tmpRow); // 行数据转换成 json
-
                     var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
                     op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
                     return op;
@@ -39,7 +38,7 @@
 	<div style="height:2px;"></div>
 	<form id="searchForm" method="post">
 			名称：<input name="t1.name" >
-	员工编号：<input name="t1.empuuid" >
+	员工编号：<input name="t1.emp.uuid" >
 
 		<button type="button" id="btnSearch">查询</button>
 	</form>
@@ -64,7 +63,8 @@
 				<td>名称</td><td><input name="t.name"> </td>
 			</tr>
 			<tr>
-				<td>员工编号</td><td><input name="t.empuuid"> </td>
+				<td>员工编号</td><td><input name="t.emp.uuid" class="easyui-combobox"
+										data-options="valueField:'uuid',textField:'name',url:'emp_list'"/> </td>
 			</tr>
 
 		</table>
