@@ -1,35 +1,55 @@
 /**
+ * 返回消息窗口的信息
+ * @param msg
+ * @returns
+ */
+function getMessage(msg) {
+    return {
+        title:'提示',
+        msg:msg,
+        showType:'slide',
+        showSpeed : 200,
+        timeout:2000,
+        style:{
+            right:'',
+            top:document.body.scrollTop+document.documentElement.scrollTop,
+            bottom:''
+        }};
+}
+/**
  * Created by huangyunning on 2017/12/4.
  */
 var columns=[[
-    {field:'uuid',title:'编号',width:100},
-    {field:'createtime',title:'生成日期',width:100},
-    {field:'checktime',title:'审核日期',width:100},
-    {field:'starttime',title:'确认日期',width:100},
-    {field:'endtime',title:'入库或出库日期',width:100},
-    {field:'type',title:'1:采购 2:销售',width:100,formatter:function (value) {
+    {field:'uuid',title:'编号',width:50},
+    {field:'createtime',title:'生成日期',width:130},
+    {field:'checktime',title:'审核日期',width:130},
+    {field:'starttime',title:'确认日期',width:130},
+    {field:'endtime',title:'入库或出库日期',width:130},
+    {field:'type',title:'1:采购 2:销售',width:80,formatter:function (value) {
         if(value=='1')
             return '采购'
         else if(value=='2')
             return '销售';
     }},
-    {field:'creater',title:'下单员',width:100,formatter:function (value,order,index) {
+    {field:'creater',title:'下单员',width:80,formatter:function (value,order,index) {
             return order.creater==null?'':order.creater.name;
     }},
-    {field:'checker',title:'审核员',width:100,formatter:function (value,order,index) {
+    {field:'checker',title:'审核员',width:80,formatter:function (value,order,index) {
         return order.checker==null?'':order.checker.name;
     }},
-    {field:'starter',title:'采购员',width:100,formatter:function (value,order,index) {
+    {field:'starter',title:'采购员',width:80,formatter:function (value,order,index) {
         return order.starter==null?'':order.starter.name;
     }},
-    {field:'ender',title:'库管员',width:100},
-    {field:'supplieruuid',title:'供应商或客户',width:100,formatter:function (value,order,index) {
+    {field:'ender',title:'库管员',width:80,formatter:function (value,order,index) {
+        return order.ender==null?'':order.ender.name;
+    }},
+    {field:'supplieruuid',title:'供应商或客户',width:80,formatter:function (value,order,index) {
         if(typeof(order.supplier)=='undefined'){
             return '';
         }
         return order.supplier.name;
     }},
-    {field:'totalmoney',title:'合计金额',width:100},
+    {field:'totalmoney',title:'合计金额',width:80},
     {field:'state',title:'采购: 0:未审核 1:已审核, 2:已确认, 3:已入库；销售：0:未出库 1:已出库',width:100,formatter:function (value,order,index) {
         switch (parseInt(value)){
             case 0:
@@ -45,7 +65,7 @@ var columns=[[
     }},
     {field:'waybillsn',title:'运单号',width:100},
 
-    {field:'-',title:'操作',width:200,formatter: function(value,row,index){
+    {field:'-',title:'操作',width:100,formatter: function(value,row,index){
         var tmpRow = {};
         for(var key in row){ // 重新构建json对象,给key的名字加前缀
 //				        console.log(key+" : "+row[key]);
@@ -106,8 +126,8 @@ $(function () {
 
                                 appendContent('#creater', rowData.creater.name);
                                 appendContent('#checker', rowData.checker==null?'':rowData.checker.name);
-                                appendContent('#starter', rowData.starter);
-                                appendContent('#ender', rowData.ender);
+                                appendContent('#starter', rowData.starter==null?'':rowData.starter.name);
+                                appendContent('#ender', rowData.ender==null?'':rowData.ender.name);
                                 appendContent('#createtime', rowData.createtime);
                                 appendContent('#checktime', rowData.checktime);
                                 appendContent('#starttime', rowData.starttime);
@@ -172,7 +192,9 @@ $(function () {
     var itemgridConfig =  {
         columns:[[
             {field:'uuid',title:'编号',width:80},
-            {field:'goodsuuid',title:'商品编号',width:90},
+            {field:'goods',title:'商品编号',width:90,formatter:function (value,goods,index) {
+                    return goods.uuid==null?'':goods.uuid;
+                }},
             {field:'goodsname',title:'商品名称',width:100},
             {field:'price',title:'价格',width:100},
             {field:'num',title:'数量',width:100},
@@ -186,6 +208,7 @@ $(function () {
                 }
             }}]],
         singleSelect:true,
+        pagination:true
     };
 
     // 入库操作时,订单详情可以双击操作
@@ -198,10 +221,10 @@ $(function () {
             // 4 刷新订单详情页面
             // 5 所有订单都入库时,更新订单状态为入库
             $('#itemDlg').dialog('open');
-            appendContent('#goodsuuid',rowData.goods.uuid);
-            appendContent('#goodsname',rowData.goods.name);
+            appendContent('#goodsuuid',rowData.uuid);
+            appendContent('#goodsname',rowData.goodsname);
             appendContent('#num',rowData.num);
-            $('#orderuuid').val(rowData.uuid);
+            $('#itemuuid').val(rowData.uuid);
         }
     }
 
@@ -260,13 +283,13 @@ $(function () {
                             // 刷新表格
                             $('#ordersDlg').dialog('close');
                             $('#grid').datagrid('reload');
-                            $.messager.alert('提示',result.message);
+                            $.messager.show(getMessage(result.message));
                         }else{
-                            $.messager.alert('提示',result);
+                            $.messager.show(getMessage(result));
                         }
                     },
                     error:function (result) {
-                       $.messager.alert("提示",'操作失败,请联系后台管理员..');
+                        $.messager.show(getMessage('操作失败,请联系后台管理员..'));
                     }
                 })
             }
@@ -295,13 +318,13 @@ $(function () {
                                    // 刷新表格
                                    $('#ordersDlg').dialog('close');
                                    $('#grid').datagrid('reload');
-                                   $.messager.alert('提示',result.message);
+                                   $.messager.show(getMessage(result.message));
                                }else{
-                                   $.messager.alert('提示',result);
+                                   $.messager.show(getMessage(result));
                                }
                            },
                            error:function (result) {
-                               $.messager.alert("提示",'操作失败,请联系后台管理员..');
+                               $.messager.show(getMessage('操作失败,请联系后台管理员..'));
                            }
                        })
             }
@@ -377,7 +400,7 @@ function save() {
             }
         })
     }else{
-        $.messager.alert('提示','必须输入完整信息...');
+        $.messager.show(getMessage('必须输入完整信息...'));
     }
 }
 // 关闭编辑窗口
@@ -399,4 +422,48 @@ function appendContent(id, content) {
 function doInStore() {
     var param = $('#itemForm').serializeJSON();
     console.log('入库操作 :'+JSON.stringify(param));
+    // 1 提示进行入库操作
+    // 2 执行入库操作
+    // 3 刷新明细表 , 订单表
+    $.messager.confirm('提示','确认进行入库操作?'+JSON.stringify(param),function (yes) {
+        if(yes){
+            $.ajax({
+                url:'orderdetail_doInStore',
+                data:param,
+                dataType:'json',
+                type:'post',
+                success:function(result){
+                    if(result.success){
+                        // 1 关闭入库对话框
+                        // 2 设置当前选中的订单明细状态为入库
+                        // 3 刷新订单明细
+                        // 4 遍历订单明细,如果明细全部入库则刷新订单状态
+                        $('#itemDlg').dialog('close');
+                        $('#itemgrid').datagrid('getSelected').state='1';
+                        $('#itemgrid').datagrid('loadData',$('#itemgrid').datagrid('getData'));
+
+                        var rows = $('#itemgrid').datagrid('getRows');
+                        var flag = true;
+                        $.each(rows,function (i,row) {
+                            if(row.state*1==0){
+                                flag = false;
+                                return false;
+                            }
+                        });
+
+                        if(flag){
+                            // 关闭订单明细窗口
+                            // 刷新明细表格
+                            $('#ordersDlg').dialog('close');
+                            $('#grid').datagrid('reload');
+                            $.messager.show(getMessage('订单入库完成...'));
+                        }else{
+                            $.messager.show(getMessage('还有未入库的明细,请继续处理...'));
+                        }
+
+                    }
+                }
+            });
+        }
+    })
 }

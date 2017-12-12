@@ -1,4 +1,23 @@
 /**
+ * 返回消息窗口的信息
+ * @param msg
+ * @returns
+ */
+function getMessage(msg) {
+    return {
+        title:'提示',
+        msg:msg,
+        showType:'slide',
+        showSpeed : 200,
+        timeout:2000,
+        style:{
+            right:'',
+            top:document.body.scrollTop+document.documentElement.scrollTop,
+            bottom:''
+        }};
+}
+
+/**
  * 获取当前行的指定字段的编辑器
  * @param _field
  * @returns {jQuery}
@@ -176,8 +195,11 @@ function del(index) {
 function save() {
     // 获取供应商的值
     var submitData = $('#ordersForm').serializeJSON();
-    if(submitData['t.supplieruuid']==''){
-        $.messager.alert('提示','请选择供应商','info');
+    if(submitData['t.supplier.uuid']==''){
+       // $.messager.alert('提示','请选择供应商','info');
+        // 消息将显示在顶部中间
+        $.messager.show(getMessage('请选择供应商...'));
+
         return;
     }
     // 获取datagrid 的数据
@@ -187,7 +209,7 @@ function save() {
 
     var rows = $('#grid').datagrid('getRows');
     if(rows.length==0){
-        $.messager.alert('提示','请添加明细','info');
+        $.messager.show(getMessage('请添加明细'));
         return;
     }
     var msg= new Array();
@@ -199,7 +221,7 @@ function save() {
         }
     })
     if(msg.length>0){
-        $.messager.alert('请添加以下商品的数量',msg,'info');
+        $.messager.show(getMessage('请添加以下商品的数量:'+msg));
         return;
     }
     var orderdetails = JSON.stringify(rows);
@@ -213,7 +235,7 @@ function save() {
                 dataType:'json',
                 data:submitData,
                 success:function (result) {
-                    $.messager.alert('提示',result.message,'info');
+                    $.messager.show(getMessage(result.message));
                     if(result.success){
                         $('#supplier').combogrid('clear');
                         $("#grid").datagrid('loadData',{total:0,rows:[],footer:{num:'商品总价',money:0}})

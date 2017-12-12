@@ -15,10 +15,10 @@
 	var columns=[[
 	  		    {field:'uuid',title:'编号',width:100},
 	  		    {field:'storeuuid',title:'仓库编号',width:100,formatter:function (value,row,index) {
-					return row.store==null?'':row.store.uuid;
+                    return row.store==null?'':row.store.uuid+'('+row.store.name+')';
 				}},
 	  		    {field:'goodsuuid',title:'商品编号',width:100,formatter:function (value,row,index) {
-                    return row.goods==null?'':row.goods.uuid;
+                    return row.goods==null?'':row.goods.uuid+'('+row.goods.name+')';
                 }},
 	  		    {field:'num',title:'数量',width:100},
 
@@ -40,10 +40,10 @@
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
 	<div style="height:2px;"></div>
 	<form id="searchForm" method="post">
-			仓库编号：<input name="t1.store.uuid" >
-	商品编号：<input name="t1.goods.uuid" >
-	数量：<input name="t1.num" >
-
+		仓库编号：<input name="t1.store.uuid" >
+		商品编号：<input name="t1.goods.uuid" >
+		数量：<input name="t1.num" > -->
+				<input name="t2.num" >
 		<button type="button" id="btnSearch">查询</button>
 	</form>
 	<div style="height:2px;"></div>

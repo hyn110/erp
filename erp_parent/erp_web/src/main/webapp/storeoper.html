@@ -14,27 +14,36 @@
 	var name="storeoper";
 	var columns=[[
 	  		    {field:'uuid',title:'编号',width:100},
-	  		    {field:'empuuid',title:'操作员工编号',width:100},
-	  		    {field:'opertime',title:'操作日期',width:100},
+	  		    {field:'empuuid',title:'操作员工编号',width:100,formatter:function(value,row,index){
+	  		        return row.emp==null?'':row.emp.uuid+'('+row.emp.name+')';
+				}},
+	  		    {field:'opertime',title:'操作日期',width:150},
 	  		    {field:'storeuuid',title:'仓库编号',width:100,formatter:function (value,row,index) {
-					return row.store==null?'':row.store.uuid;
+					return row.store==null?'':row.store.uuid+'('+row.store.name+')';
                 }},
 	  		    {field:'goodsuuid',title:'商品编号',width:100,formatter:function (value,row,index) {
-                    return row.goods==null?'':row.goods.uuid;
+                    return row.goods==null?'':row.goods.uuid+'('+row.goods.name+')';
                 }},
 	  		    {field:'num',title:'数量',width:100},
-	  		    {field:'type',title:'1：入库 2：出库',width:100},
-
-				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
-                    var tmpRow = {};
-                    for(var key in row){ // 重新构建json对象,给key的名字加前缀
-                        tmpRow['t.'+key]=row[key];
-                    }
-                    var obj = JSON.stringify(tmpRow); // 行数据转换成 json
-                    var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
-                    op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
-                    return op;
-				}}
+	  		    {field:'type',title:'1：入库 2：出库',width:100,formatter:function (value,row,index) {
+					if(value=='1'){
+					    return '1(入库)';
+					}else{
+                        return '2(出库)';
+					}
+                }}
+//                ,
+//
+//				{field:'-',title:'操作',width:200,formatter: function(value,row,index){
+//                    var tmpRow = {};
+//                    for(var key in row){ // 重新构建json对象,给key的名字加前缀
+//                        tmpRow['t.'+key]=row[key];
+//                    }
+//                    var obj = JSON.stringify(tmpRow); // 行数据转换成 json
+//                    var op = "<a href='#' onclick='del("+row.uuid+")'>删除</a>";
+//                    op = "<a href='#' onclick='edit("+obj+")'>修改</a>"+" | "+op;
+//                    return op;
+//				}}
 				]];
 
 </script>
@@ -44,7 +53,10 @@
 	<div style="height:2px;"></div>
 	<form id="searchForm" method="post">
 			操作员工编号：<input name="t1.emp.uuid" >
-	操作日期：<input name="t1.opertime" >
+	操作日期：<input name="t1.opertime" class="easyui-datetimebox"
+				data-options="showSeconds:true"  style="width:150px"> -->
+		<input name="t2.opertime" class="easyui-datetimebox"
+			   data-options="showSeconds:true"  style="width:150px">
 	仓库编号：<input name="t1.store.uuid" >
 	商品编号：<input name="t1.goods.uuid" >
 	数量：<input name="t1.num" >
@@ -78,7 +90,10 @@
 				</td>
 			</tr>
 			<tr>
-				<td>操作日期</td><td><input name="t.opertime"> </td>
+				<td>操作日期</td><td><input name="t.opertime" class="easyui-datetimebox"
+										data-options="showSeconds:true"  style="width:150px">
+
+			</td>
 			</tr>
 
 			<tr>
