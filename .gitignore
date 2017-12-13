@@ -12,3 +12,7 @@
 .idea/libraries/Maven__javax_inject_javax_inject_1.xml
 .idea/sqldialects.xml
 .idea/uiDesigner.xml
+erp_parent/erp_biz/target/
+erp_parent/erp_dao/target/
+erp_parent/erp_entity/target/
+erp_parent/erp_web/target/
