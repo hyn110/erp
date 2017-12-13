@@ -54,7 +54,7 @@ function showEchar(rows) {
     // 饼状图块的名字
     pie.legend_data = titles;
     // 饼状图的数据
-    pie.series_data = data.rows;
+    pie.series_data = rows;
 
     // 副标题显示时间范围
     pie.title_subtext = $('#date1').datetimebox('getValue') +' --- '+$('#date2').datetimebox('getValue');
@@ -75,7 +75,7 @@ function showEchar(rows) {
         },
         legend: {
             orient: 'vertical',
-            left: 'right',
+            left: 'left',
             //  data: ['儿童食品','手机数码','水果']
             data:pie.legend_data
         },

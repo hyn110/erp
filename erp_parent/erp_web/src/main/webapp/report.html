@@ -20,18 +20,30 @@
 
 
 </head>
-<body>
-<div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
-	<div style="height:2px;"></div>
-	<form id="searchForm" method="post">
-		开始日期：<input name="date1" id="date1" class="easyui-datetimebox" >
-		截止日期：<input name="date2" id="date2" class="easyui-datetimebox">
-		<a href="#" id="btnSearch" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-	</form>
-	<div style="height:2px;"></div>
-</div>
-<table id="grid"></table>
-<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
-<div id="echart" style="width: 600px;height:400px;"></div>
+
+<body class="easyui-layout">
+
+
+	<div data-options="region:'east',split:true" title="East" style="width:620px;">
+		<div >
+		<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+		<div id="echart" style="width: 600px;height:400px;"></div>
+		</div>
+	</div>
+
+	<div data-options="region:'center'">
+		<div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
+			<div style="height:2px;"></div>
+			<form id="searchForm" method="post">
+				开始日期：<input name="date1" id="date1" class="easyui-datetimebox" >
+				截止日期：<input name="date2" id="date2" class="easyui-datetimebox">
+				<a href="#" id="btnSearch" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+			</form>
+			<div style="height:2px;"></div>
+			<table id="grid"></table>
+		</div>
+	</div>
+
 </body>
+
 </html>
