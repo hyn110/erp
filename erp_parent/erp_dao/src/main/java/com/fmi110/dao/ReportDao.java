@@ -9,4 +9,6 @@ import java.util.Map;
  */
 public interface ReportDao{
     List<Map<String, Object>> orderReport(Date date1, Date date2);
+
+    List<Map<String, Object>> trendReport(Integer year);
 }

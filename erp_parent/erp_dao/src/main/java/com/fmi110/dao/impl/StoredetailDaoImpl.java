@@ -1,9 +1,14 @@
 package com.fmi110.dao.impl;
 
 import com.fmi110.dao.StoredetailDao;
+import com.fmi110.entity.StoreAlert;
 import com.fmi110.entity.Storedetail;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate5.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,4 +57,31 @@ public class StoredetailDaoImpl extends BaseDaoImpl<Storedetail> implements Stor
         }
         return 0;
     }
+
+    @Override
+    public List<StoreAlert> getStoreAlertList( Integer firstResult, Integer maxResult) {
+
+        return getHibernateTemplate().execute(new HibernateCallback<List<StoreAlert>>() {
+            @Override
+            public List<StoreAlert> doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from StoreAlert where storenum<=outnum");
+                query.setFirstResult(firstResult == null ? 0 : firstResult);
+                if(maxResult!=null){
+                    query.setMaxResults(maxResult);
+                }
+                return query.list();
+            }
+        });
+    }
+
+    @Override
+    public Long getStoreAlertCount() {
+        List<Long> list = (List<Long>) getHibernateTemplate().find("select count(*) from StoreAlert where storenum<=outnum");
+        if(list.size()>0){
+            return list.get(0);
+        }
+        return 0L;
+    }
+
+
 }

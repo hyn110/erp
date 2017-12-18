@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_dao/erp_dao.iml" filepath="$PROJECT_DIR$/erp_parent/erp_dao/erp_dao.iml" />
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_entity/erp_entity.iml" filepath="$PROJECT_DIR$/erp_parent/erp_entity/erp_entity.iml" />
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_parent.iml" filepath="$PROJECT_DIR$/erp_parent/erp_parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_utils/erp_utils.iml" filepath="$PROJECT_DIR$/erp_parent/erp_utils/erp_utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_web/erp_web.iml" filepath="$PROJECT_DIR$/erp_parent/erp_web/erp_web.iml" />
     </modules>
   </component>

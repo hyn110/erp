@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by huangyunning on 2017/12/13.
  */
 @Repository
-public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao{
+public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
 
     @Autowired
     public void injectSessionFactory(SessionFactory sessionFactory) {
@@ -45,10 +42,38 @@ public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao{
             list.add(date2);
         }
 
-        hql = hql+ "  GROUP BY t.name";
+        hql = hql + "  GROUP BY t.name";
 
 
         return (List<Map<String, Object>>) getHibernateTemplate().find(hql, list.toArray());
+    }
+
+    /**
+     * 统计指定年份的每个月的销售额
+     *
+     * @param year
+     * @return
+     */
+//    select to_char(o.createtime,'yyyy-MM') ,sum(d.MONEY) from ORDERDETAIL d,ORDERS o
+//
+//    where
+//      d.ORDERSUUID=o.UUID
+//    AND
+//      o.TYPE=1
+//    GROUP BY
+//      to_char(o.createtime,'yyyy-MM')
+    @Override
+    public List<Map<String, Object>> trendReport(Integer year) {
+        String hql = "select new Map(month(o.createtime) as month,sum(d.money) as value) from Orderdetail d,Orders o " +
+                     " where" +
+                     " d.order=o and o.type='1' and year(o.createtime)=?" +
+                     " group by" +
+                     " month(o.createtime)";
+        if (year == null) {
+            year = Calendar.getInstance()
+                           .get(Calendar.YEAR); // 获取当前时间对应的年份
+        }
+        return (List<Map<String, Object>>) getHibernateTemplate().find(hql, year);
     }
 
 }

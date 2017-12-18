@@ -10,6 +10,7 @@
         <module name="erp_biz" />
         <module name="erp_dao" />
         <module name="erp_entity" />
+        <module name="erp_utils" />
         <module name="erp_web" />
       </profile>
     </annotationProcessing>
@@ -18,6 +19,7 @@
       <module name="erp_dao" target="1.8" />
       <module name="erp_entity" target="1.8" />
       <module name="erp_parent" target="1.8" />
+      <module name="erp_utils" target="1.8" />
       <module name="erp_web" target="1.8" />
     </bytecodeTargetLevel>
   </component>

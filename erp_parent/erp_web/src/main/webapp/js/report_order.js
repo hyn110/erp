@@ -50,7 +50,7 @@ function showEchar(rows) {
     var titles = new Array()
     $.each(rows,function (i,row) {
         titles.push(row.name);
-    })
+    });
     // 饼状图块的名字
     pie.legend_data = titles;
     // 饼状图的数据

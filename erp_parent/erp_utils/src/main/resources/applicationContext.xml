@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <!-- 声明使用占位符 , 并指定占位符文件位置 -->
+    <!--<context:property-placeholder location="classpath*:mail.properties" />-->
+
+    <!-- 开启注解扫描 -->
+    <context:component-scan base-package="com.fmi110"/>
+
+    <!-- 使用qq邮箱 -->
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <!--发送邮件的邮箱地址-->
+        <!--<property name="host" value="${mail.host}"/>-->
+        <!--<property name="port" value="${mail.port}"/>-->
+        <!--<property name="username" value="${mail.username}"/>-->
+        <!--&lt;!&ndash; qq邮箱的授权码，如果是企业邮箱，则使用登录密码 &ndash;&gt;-->
+        <!--<property name="password" value="${mail.password}"/>-->
+        <property name="host" value="smtp.qq.com"/>
+        <property name="port" value="587"/>
+        <property name="username" value="1009225458@qq.com"/>
+        <!-- qq邮箱的授权码，如果是企业邮箱，则使用登录密码 -->
+        <property name="password" value="qnuwnpgmrvkxbfid"/>
+        <property name="javaMailProperties">
+            <props >
+                <prop key="mail.smtp.auth">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--FreeMarker模板-->
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="classpath:freemarker" />
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_update_delay">1800</prop>
+                <prop key="locale">zh_CN</prop>
+                <prop key="default_encoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

@@ -31,4 +31,11 @@ public class ResportController extends BaseController {
         return service.orderReport(date1, date2);
     }
 
+    @RequestMapping("report_trendReport")
+    @ResponseBody
+    public List<Map<String, Object>> trendReport(Integer year) {
+
+        return service.trendReport(year);
+    }
+
 }

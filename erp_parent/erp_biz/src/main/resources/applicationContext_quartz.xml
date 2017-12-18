@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+
+    <!-- 开启注解扫描 -->
+    <context:component-scan base-package="com.fmi110.erp"/>
+
+    <!--配置job-->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="mailJob"/>
+        <property name="targetMethod" value="doJob"/>
+        <!--串行化执行-->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!--配置 trigger-->
+    <bean id="jobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!--每天20点扫描-->
+        <property name="cronExpression" value="0 * 20 * * ? *"/>
+        <!--触发器和job关联-->
+        <property name="jobDetail" ref="jobDetail"/>
+    </bean>
+
+    <!--配置任务调度器-->
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="jobTrigger"/>
+            </list>
+        </property>
+
+        <!--跳过新版本的检查-->
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
