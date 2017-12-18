@@ -15,9 +15,20 @@ $(function () {
                             columns: columns,
                             pagination:true,
                             pageList:[5,10,15,20,50],
-                            toolbar:[{iconCls:'icon-add',
-                                text:'新增',
-                                handler:add}]
+                            toolbar:[
+                                {
+                                    iconCls:'icon-add',
+                                    text:'新增',
+                                    handler:add
+                                },{
+                                    iconCls:'icon-excel',
+                                    text:'导出',
+                                    handler:function () {
+                                        var data = $('#searchForm').serializeJSON();
+                                        $.download(name + '_export' + listParam, data);
+                                    }
+                                }
+                            ]
                         });
 
 

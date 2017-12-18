@@ -74,6 +74,12 @@ public abstract class BaseDaoImpl<T> extends HibernateDaoSupport implements Base
         }
     }
 
+    /**
+     * 分页查询
+     * @param firstResult
+     * @param maxResult
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @Override
     public List<T> findPage(Integer firstResult, Integer maxResult) {
@@ -86,6 +92,15 @@ public abstract class BaseDaoImpl<T> extends HibernateDaoSupport implements Base
         return (List<T>) template.findByCriteria(criteria, firstResult, maxResult);
     }
 
+    /**
+     * 条件分页查询,当分页参数不完整时,查询满足条件的所有数据
+     * @param t1  条件对象
+     * @param t2  条件对象
+     * @param param
+     * @param firstResult 起始页
+     * @param maxResult  页大小
+     * @return
+     */
     @Override
     public List<T> findPage(T t1, T t2, Object param, Integer firstResult, Integer maxResult) {
         DetachedCriteria criteria = this.getDetachedCriteria(t1, t2, param);
