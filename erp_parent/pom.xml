@@ -13,6 +13,7 @@
         <module>erp_biz</module>
         <module>erp_web</module>
         <module>erp_utils</module>
+        <module>cxf</module>
     </modules>
 
     <packaging>pom</packaging>

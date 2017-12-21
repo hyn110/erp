@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/erp_parent/cxf/cxf.iml" filepath="$PROJECT_DIR$/erp_parent/cxf/cxf.iml" />
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_biz/erp_biz.iml" filepath="$PROJECT_DIR$/erp_parent/erp_biz/erp_biz.iml" />
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_dao/erp_dao.iml" filepath="$PROJECT_DIR$/erp_parent/erp_dao/erp_dao.iml" />
       <module fileurl="file://$PROJECT_DIR$/erp_parent/erp_entity/erp_entity.iml" filepath="$PROJECT_DIR$/erp_parent/erp_entity/erp_entity.iml" />

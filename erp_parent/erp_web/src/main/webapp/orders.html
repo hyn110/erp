@@ -12,6 +12,7 @@
 <script type="text/javascript" src="ui/jquery.serializejson.min.js"></script>
 <script type="text/javascript" src="js/request.js"></script>
 <script type="text/javascript" src="js/orders.js"></script>
+<script type="text/javascript" src="js/download.js"></script>
 <script type="text/javascript">
 	var name="orders";
 	var listParam='';
@@ -151,7 +152,8 @@
 	<!--明细列表-->
 	<div id="itemgrid"></div>
 	<a class="easyui-linkbutton" id="btnCheck" href="#" data-options="iconCls:'icon-search'" style="display: none">审核</a>
-	<a class="easyui-linkbutton" id="btnStart" href="#" data-options="iconCls:'icon-search'" style="display: none">确认</a>
+	<a class="easyui-linkbutton" id="btnStart" href="#" data-options="iconCls:'icon-ok'" style="display: none">确认</a>
+	<a class="easyui-linkbutton" id="btnExport" href="#" data-options="iconCls:'icon-excel'" >导出</a>
 </div>
 
 <!--入库明细窗口-->

@@ -95,9 +95,13 @@ $(function () {
                             columns: columns,
                             pagination:true,
                             pageList:[5,10,15,20,50],
-                            toolbar:[{iconCls:'icon-add',
-                                text:'新增',
-                                handler:add}],
+                            toolbar:[
+                                {
+                                    iconCls:'icon-add',
+                                    text:'新增',
+                                    handler:add
+                                }
+                            ],
                             singleSelect:true,
                             onDblClickRow:function (rowIndex,rowData) {
                                 console.log(rowIndex+"  ,  "+rowData);
@@ -332,6 +336,11 @@ $(function () {
 
     });
 
+    // 导出excel 按钮
+    $('#btnExport').click(function(){
+        var orderUuid = $('#uuid').html();
+        $.download("orders_export", {uuid: orderUuid});
+    });
 
 });
 

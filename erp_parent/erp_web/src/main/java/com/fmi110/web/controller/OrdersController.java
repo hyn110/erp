@@ -8,11 +8,16 @@ import com.fmi110.entity.Orders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -125,5 +130,24 @@ public class OrdersController extends BaseController {
         return getResultMap(Boolean.TRUE,"订单状态修改为已确认~");
     }
 
+    /**
+     * 导出指定的订单明细到excel
+     * @return
+     */
+    @RequestMapping("orders_export")
+    public ResponseEntity<byte[]> export(Long uuid) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream(1024 * 32);
+        ordersBiz.exportById(os,uuid);
+        HttpHeaders headers = new HttpHeaders();
+
+        String fileName = new String(("订单 "+uuid+" 详情.xls").getBytes(),"iso-8859-1");
+
+
+        headers.setContentDispositionFormData("attachment",fileName);
+
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        return new ResponseEntity<byte[]>(os.toByteArray(),headers, HttpStatus.CREATED);
+    }
 
 }

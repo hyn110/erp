@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="cxf" />
         <module name="erp_biz" />
         <module name="erp_dao" />
         <module name="erp_entity" />
@@ -15,6 +16,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="cxf" target="1.8" />
       <module name="erp_biz" target="1.8" />
       <module name="erp_dao" target="1.8" />
       <module name="erp_entity" target="1.8" />

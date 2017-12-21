@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by huangyunning on 2017/12/4.
@@ -29,6 +30,8 @@ public class Emp {
     private Date   birthday;
 //    private Long depuuid;
     private Dep    dep;
+
+    private List<Role> roles;
 
     @Id
     @Column(name = "UUID")
@@ -134,6 +137,19 @@ public class Emp {
 
     public void setDep(Dep dep) {
         this.dep = dep;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @OrderBy("uuid")  // 填 Roles类的属性
+    @JoinTable(name="EMP_ROLE",
+               joinColumns = {@JoinColumn(name = "EMPUUID",referencedColumnName = "UUID")},
+               inverseJoinColumns = {@JoinColumn(name="ROLEUUID",referencedColumnName = "UUID")})
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     @Override

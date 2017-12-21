@@ -28,7 +28,7 @@
 <body>
 <div class="easyui-panel" style="padding-left:4px;border-bottom:0px;">
 	<div style="height:2px;"></div>
-	<form id="searchForm">
+	<form id="searchForm" method="post">
 			名称：<input name="t1.name" >
 
 		<button type="button" id="btnSearch">查询</button>
@@ -37,12 +37,21 @@
 </div>
 <table id="grid"></table>
 
-<div id="editDlg" style="padding:8px;">
-	<form id="editForm">
+<div id="editDlg"  class="easyui-dialog" style="padding:8px;width:400px"
+	 data-options="title:'我的对话框',modal:true,closed:true,
+			buttons:[{
+				text:'保存',
+				handler:save
+			},{
+				text:'关闭',
+				handler:close
+			}]">
+
+	<form id="editForm"  method="post">
 			<input name="t.uuid" type="hidden"> 
 
 		<table>
-						<tr>
+			<tr>
 				<td>名称</td><td><input name="t.name"> </td>
 			</tr>
 

@@ -10,4 +10,6 @@ public interface EmpBiz extends BaseBiz<Emp>{
     Emp findByUsernameAndPwd(Emp entity);
 
     void updatePwd(String newpass, Emp emp) throws Exception;
+
+
 }
